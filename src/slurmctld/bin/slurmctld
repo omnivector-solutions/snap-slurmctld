@@ -24,6 +24,10 @@ if [[ ! -f $SLURM_CONF ]]; then
         'BEGIN{FS=OFS="="}match($1, "^\\s*" var "\\s*") {$2="" new_val}1' > $SLURM_CONF
 fi
 
+if [[ ! -f $SNAP_DATA/munge.socket.2 ]]; then
+    pprint "Munge socket available"
+fi
+
 # Run SLURM configurator
 #pprint "Running slurm-configurator"
 #slurm-configurator > $SLURMCTLD_TMP_CONFIG_FILE
