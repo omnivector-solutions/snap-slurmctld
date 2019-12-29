@@ -18,4 +18,5 @@ chmod -R 755 $SNAP_COMMON/var
 
 # SLURM config dir
 mkdir -p $SNAP_COMMON/etc/slurm
+cp $SNAP/templates/default_cluster $SNAP_COMMON/etc/slurm/
 chmod -R 755 $SNAP_COMMON/etc/slurm

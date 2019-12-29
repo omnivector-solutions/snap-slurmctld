@@ -5,7 +5,7 @@ description: |
   Slurmctld is the central management daemon of Slurm. It monitors all other Slurm daemons and resources, accepts work (jobs), and allocates resources to those jobs. Given the critical functionality of slurmctld, there may be a backup server to assume these functions in the event that the primary server fails.
 
 grade: stable
-confinement: classic
+confinement: strict
 
 base: core18
 
@@ -24,6 +24,41 @@ apps:
 
   slurm-configurator:
     command: bin/slurm-configurator
+
+  sacct:
+    command: bin/slurm-cmd sacct
+  sacctmgr:
+    command: bin/slurm-cmd sacctmgr
+  salloc:
+    command: bin/slurm-cmd salloc
+  sattach:
+    command: bin/slurm-cmd sattach
+  sbatch:
+    command: bin/slurm-cmd sbatch
+  sbcast:
+    command: bin/slurm-cmd sbcast
+  scancel:
+    command: bin/slurm-cmd scancel
+  scontrol:
+    command: bin/slurm-cmd scontrol
+  sdiag:
+    command: bin/slurm-cmd sdiag
+  sinfo:
+    command: bin/slurm-cmd sinfo
+  sprio:
+    command: bin/slurm-cmd sprio
+  squeue:
+    command: bin/slurm-cmd squeue
+  sreport:
+    command: bin/slurm-cmd sreport
+  srun:
+    command: bin/slurm-cmd srun
+  sshare:
+    command: bin/slurm-cmd sshare
+  sstat:
+    command: bin/slurm-cmd sstat
+  strigger:
+    command: bin/slurm-cmd strigger
 
 parts:
   slurm:
@@ -103,7 +138,7 @@ parts:
     stage:
       - -README
     prime:
-      - -README
+      - -*
     override-build: |
       snapcraftctl build
       pip3 install meson
@@ -124,6 +159,8 @@ parts:
       - g++
     stage:
       - include/
+    prime:
+      - -*
 
   libtool:
     plugin: autotools
@@ -145,6 +182,8 @@ parts:
       - make
     stage:
       - opt/
+    prime:
+      - -*
     override-build: |
       snapcraftctl build
       ./buildconf

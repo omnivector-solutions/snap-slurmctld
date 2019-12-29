@@ -1,0 +1,2 @@
+NodeName=dev[0-25] NodeAddr=edev[0-25] Weight=16 State=FUTURE
+PartitionName=debug Nodes=dev[0-25] Default=YES

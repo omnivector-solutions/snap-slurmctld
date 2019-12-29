@@ -26,10 +26,8 @@ if [[ ! -f $SLURMCTLD_CONFIG_FILE ]]; then
 fi
 
 # Run SLURM configurator
-pprint "Running slurm-configurator"
-slurm-configurator > $SLURMCTLD_TMP_CONFIG_FILE
-
-cp $SLURMCTLD_TMP_CONFIG_FILE $SLURMCTLD_CONFIG_FILE
+#pprint "Running slurm-configurator"
+#slurm-configurator > $SLURMCTLD_TMP_CONFIG_FILE
 
 pprint "Starting SLURMCTLD"
 
