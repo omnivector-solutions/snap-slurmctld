@@ -9,6 +9,10 @@ confinement: strict
 
 base: core18
 
+passthrough:
+  system-usernames:
+    snap_daemon: shared
+
 plugs:
   munged-socket:
     interface: content
@@ -100,6 +104,7 @@ parts:
       - include/
       - lib/
       - etc/
+      - usr/
     prime:
       - bin/
       - share/
@@ -107,6 +112,7 @@ parts:
       - include/
       - lib/
       - etc/
+      - usr/
     override-build: |
       snapcraftctl build
 

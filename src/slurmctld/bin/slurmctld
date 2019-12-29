@@ -4,7 +4,7 @@ set -e
 
 . "$SNAP/utilities/common-utilities"
 
-export LD_LIBRARY_PATH=$SNAP/lib:$SNAP/lib/slurm
+export LD_LIBRARY_PATH=$SNAP/lib:$SNAP/lib/slurm:$SNAP/usr/lib/x86_64-linux-gnu
 
 export PATH=$SNAP/bin:$SNAP/usr/bin:/snap/bin:$PATH
 
@@ -31,6 +31,6 @@ fi
 pprint "Starting SLURMCTLD"
 
 exec "$SNAP/sbin/slurmctld" \
-    "-f" "$SLURMCTLD_CONFIG_FILE" \
+    "-f" "$SLURM_CONF" \
     "-L" "$SLURMCTLD_LOG" \
     "-cDvvvvv" "$@"

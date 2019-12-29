@@ -4,5 +4,8 @@ set -e
 
 slurm_cmd=$1
 
+export LD_LIBRARY_PATH=$SNAP/lib:$SNAP/lib/slurm:$SNAP/usr/lib/x86_64-linux-gnu
+export PATH=$SNAP/bin:$SNAP/usr/bin:/snap/bin:$PATH
 export SLURM_CONF=$SNAP_COMMON/etc/slurm/slurm.conf
+
 exec "$SNAP/bin/$slurm_cmd" "$@"
