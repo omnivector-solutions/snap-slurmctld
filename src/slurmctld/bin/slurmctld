@@ -1,0 +1,38 @@
+#!/bin/bash
+
+set -e
+
+. "$SNAP/utilities/common-utilities"
+
+export LD_LIBRARY_PATH
+LD_LIBRARY_PATH=$SNAP/lib:$SNAP/lib/slurm/
+
+export PATH=$SNAP/bin:$SNAP/usr/bin:/snap/bin:$PATH
+
+SLURMCTLD_INIT_CONFIG_FILE=$SNAP/templates/slurm.conf
+SLURMCTLD_CONFIG=$SNAP_COMMON/etc/slurm/slurm.conf
+SLURMCTLD_TMP_CONFIG_FILE=/tmp/slurm.conf
+SLURMCTLD_LOG=$SNAP_COMMON/log/slurmctld.log
+HOSTNAME=`hostname -s`
+
+
+# If the slurmdbd.conf doesn't exist, then we know we need to generate the file.
+# At a minimum lets seed the file with our hostname.
+if [[ ! -f $SLURMCTLD_CONFIG ]]; then
+    pprint "Creating Initial SLURMCTLD config"
+
+    cat $SLURMDBD_INIT_CONFIG_FILE | awk -v var="SlurmctldHost" -v new_val=$HOSTNAME \
+        'BEGIN{FS=OFS="="}match($1, "^\\s*" var "\\s*") {$2="" new_val}1' > $SLURMDBD_CONFIG
+fi
+
+# Run SLURM configurator
+pprint "Running slurm-configurator"
+slurm-configurator > $SLURMDBD_CONFIG
+
+pprint "Starting SLURMCTLD"
+
+export SLURM_CONF=$SLURMCTLD_CONFIG
+exec "$SNAP/sbin/slurmctld" \
+    "-f" "$SLURMCTLD_CONFIG" \
+    "-L" "$SLURMCTLD_LOG" \
+    "-cDvvvvv" "$@"
