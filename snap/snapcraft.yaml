@@ -203,11 +203,13 @@ parts:
     source-type: local
     build-packages:
       - python3-pip
+      - python3-setuptools
     stage-packages:
       - python3-pip
+      - python3-setuptools
     override-pull: |
       snapcraftctl pull
-      pip3 install jinja2
+      pip3 install jinja2 pyaml
 
   wrappers:
     plugin: dump
@@ -218,3 +220,9 @@ parts:
     plugin: dump
     source: src/common/
     source-type: local
+
+  hooks:
+    plugin: dump
+    source: src/hooks/
+    organize:
+      bin/: snap/hooks/

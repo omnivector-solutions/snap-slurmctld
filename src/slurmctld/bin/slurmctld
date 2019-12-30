@@ -10,27 +10,39 @@ export PATH=$SNAP/bin:$SNAP/usr/bin:/snap/bin:$PATH
 
 export SLURM_CONF=$SNAP_COMMON/etc/slurm/slurm.conf
 
-HOSTNAME=`hostname -s`
 SLURMCTLD_INIT_CONFIG_FILE=$SNAP/templates/slurm.conf
 SLURMCTLD_TMP_CONFIG_FILE=/tmp/slurm.conf
 SLURMCTLD_LOG=$SNAP_COMMON/log/slurmctld.log
+HOSTNAME=`hostname -s`
 
-# If the slurm.conf doesn't exist, then we know we need to generate the file.
-# At a minimum lets seed the file with our hostname.
-if [[ ! -f $SLURM_CONF ]]; then
-    pprint "Creating Initial SLURMCTLD config"
+CONFIGURATOR_DIR=$SNAP_COMMON/etc/slurm-configurator
+HOST_YAML=$CONFIGURATOR_DIR/host.yaml
+AUTH_YAML=$CONFIGURATOR_DIR/auth.yaml
+#GENERAL_YAML=$CONFIGURATOR_DIR/general.yaml
+#NODES_YAML=$CONFIGURATOR_DIR/nodes.yaml
+#PARTITIONS_YAML=$CONFIGURATOR_DIR/partitions.yaml
 
-    cat $SLURMCTLD_INIT_CONFIG_FILE | awk -v var="SlurmctldHost" -v new_val=$HOSTNAME \
-        'BEGIN{FS=OFS="="}match($1, "^\\s*" var "\\s*") {$2="" new_val}1' > $SLURM_CONF
+
+if [[ ! -f $HOST_YAML ]]; then
+    pprint "Creating Initial host config file"
+    pprint "$HOST_YAML"
+
+    echo "SlurmctldHost: $HOSTNAME" > $HOST_YAML
 fi
 
-if [[ ! -f $SNAP_DATA/munge.socket.2 ]]; then
+
+if [[ ! -S $SNAP_DATA/munge.socket.2 ]]; then
+    pprint "Munge socket not available"
+    printf "AuthType: auth/none\n" > $AUTH_YAML
+else
     pprint "Munge socket available"
+    printf "AuthType: auth/munge\n
+AuthInfo: \"socket=$SNAP_DATA/munge.socket.2\"\n" > $AUTH_YAML
 fi
 
-# Run SLURM configurator
-#pprint "Running slurm-configurator"
-#slurm-configurator > $SLURMCTLD_TMP_CONFIG_FILE
+# Run slurm-configurator
+pprint "Running slurm-configurator"
+slurm-configurator > $SLURM_CONF
 
 pprint "Starting SLURMCTLD"
 
